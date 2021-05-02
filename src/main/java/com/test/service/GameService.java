@@ -21,7 +21,7 @@ public class GameService {
 
     public Game createGame(Player player) {
         Game game = new Game();
-        game.setBoard(new int[3][3]);
+        game.setBoard(new int[4][4]);
         game.setGameId(UUID.randomUUID().toString());
         game.setPlayer1(player);
         game.setStatus(NEW);
@@ -68,16 +68,16 @@ public class GameService {
         int[][] board = game.getBoard();
         board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
 
-        Boolean xWinner = checkWinner(game.getBoard(), TicToe.X);
-        Boolean oWinner = checkWinner(game.getBoard(), TicToe.O);
-        Boolean draw = checkDraw(game.getBoard());
-        if (xWinner) {
+        Boolean draw = getDraw(game.getBoard());
+        int winner = getWinner(game.getBoard());
+        if (winner == TicToe.X.getValue()) {
             game.setWinner(TicToe.X);
             game.setStatus(FINISHED);
-        } else if (oWinner) {
+        } else if (winner == TicToe.O.getValue()) {
             game.setWinner(TicToe.O);
             game.setStatus(FINISHED);
-        } else if(draw){
+        }
+        else if(draw){
             game.setWinner(TicToe.D);
             game.setStatus(FINISHED);
         }
@@ -85,51 +85,106 @@ public class GameService {
         return game;
     }
 
-    private Boolean checkWinner(int[][] board, TicToe ticToe) {
-        int[] boardArray = new int[9];
-        int counterIndex = 0;
-        int countFull = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                boardArray[counterIndex] = board[i][j];
-                counterIndex++;
-                if(board[i][j] == 0){
-                    countFull++;
+
+    public int getWinner(int[][] board) {
+        int winner = 0;
+        boolean isWon = false;
+        int check = -1;
+
+        // check columns (same x)
+        for (int x = 0; x < board.length; x++) {
+            int value = board[x][0];
+
+            if (value == 0) {
+                continue;
+            }
+            for (int y = 1; y < board[x].length; y++) {
+                int current = board[x][y];
+                if (current == 0 || current != value) {
+                    check = 0;
+                    break;
                 }
+                if (y == board[x].length -1) {
+                    isWon = true;
+                    winner = value;
+                }
+            }
+            if(isWon) {
+                break;
             }
         }
 
-        int[][] winCombinations = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
-        for (int i = 0; i < winCombinations.length; i++) {
-            int counter = 0;
-            for (int j = 0; j < winCombinations[i].length; j++) {
+        if (! isWon) {
+            // check rows (same y)
 
-                if (boardArray[winCombinations[i][j]] == ticToe.getValue()) {
-                    counter++;
-                    if (counter == 3) {
-                        return true;
+            for (int y = 0; y < board[0].length; y++) {
+                int value = board[0][y];
+                if (value == 0) {
+                    continue;
+                }
+                for (int x = 1; x < board.length; x++) {
+                    int current = board[x][y];
+                    if (current == 0 || current !=value) {
+                        break;
+                    }
+                    if (x == board.length -1) {
+                        isWon = true;
+                        winner = value;
+                    }
+                }
+                if(isWon) {
+                    break;
+                }
+            }
+
+        }
+        if (! isWon) {
+            // check diagonal (bottom left to top right
+
+            int value = board[0][0];
+            if (value != 0) {
+                for (int i = 1; i < board.length; i++) {
+                    if (board[i][i] != value) {
+                        break;
+                    }
+                    if (i == board.length -1) {
+                        isWon = true;
+                        winner = value;
                     }
                 }
             }
         }
-        return false;
-    }
 
-    private Boolean checkDraw(int[][] board) {
-        int countFull = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                if(board[i][j] == 0){
-                    countFull++;
+        if (! isWon) {
+            // check anti-diagonal (top left to bottom right)
+            int length = board.length;
+            int value = board[0][length-1];
+            if (value != 0) {
+                for (int i = 1; i < length; i++) {
+                    if (board[i][length-i-1] != value) {
+                        break;
+                    }
+                    if (i == length -1) {
+                        winner = value;
+                    }
                 }
             }
         }
-        if(countFull == 0){
-            return true;
-        }
-        else{
-            return false;
-        }
+        return winner;
+    }
 
+    public boolean getDraw(int[][] board) {
+        boolean status = false;
+        for (int x = 0; x < board.length; x++) {
+            for (int y = 0; y < board[x].length; y++) {
+                int current = board[x][y];
+                if (current == 0) {
+                    return false;
+                } else {
+                    status = true;
+                }
+            }
+        }
+        return status;
     }
 }
