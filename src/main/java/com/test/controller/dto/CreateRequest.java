@@ -4,8 +4,7 @@ import com.test.model.Player;
 import lombok.Data;
 
 @Data
-public class ConnectRequest {
+public class CreateRequest {
     private Player player;
-    private String gameId;
     private int size;
 }

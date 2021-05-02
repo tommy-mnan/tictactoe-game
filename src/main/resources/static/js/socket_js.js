@@ -18,92 +18,116 @@ function connectToSocket(gameId) {
 }
 
 function create_game() {
-    let login = document.getElementById("login").value;
-    if (login == null || login === '') {
-        alert("Please enter login");
-    } else {
-        $.ajax({
-            url: url + "/game/start",
-            type: 'POST',
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({
-                "login": login
-            }),
-            success: function (data) {
-                gameId = data.gameId;
-                playerType = 'X';
-                reset();
-                connectToSocket(gameId);
-                alert("Your created a game. Game id is: " + data.gameId);
-                gameOn = true;
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        })
+    var boardSize = $("#boardSize").val();
+    if(boardSize != 0){
+        let login = document.getElementById("login").value;
+        if (login == null || login === '') {
+            alert("Please enter login");
+        } else {
+            $.ajax({
+                url: url + "/game/start",
+                type: 'POST',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "player": {
+                        "login": login
+                    },
+                    "size": boardSize
+                }),
+                success: function (data) {
+                    gameId = data.gameId;
+                    playerType = 'X';
+                    reset();
+                    connectToSocket(gameId);
+                    alert("Your created a game. Game id is: " + data.gameId);
+                    gameOn = true;
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
+        }
+    } else{
+        alert("Please Select Board Size");
     }
 }
 
 
 function connectToRandom() {
-    let login = document.getElementById("login").value;
-    if (login == null || login === '') {
-        alert("Please enter login");
-    } else {
-        $.ajax({
-            url: url + "/game/connect/random",
-            type: 'POST',
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({
-                "login": login
-            }),
-            success: function (data) {
-                gameId = data.gameId;
-                playerType = 'O';
-                reset();
-                connectToSocket(gameId);
-                displayResponse(data);
-                alert("Congrats you're playing with: " + data.player1.login);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        })
+    var boardSize = $("#boardSize").val();
+    if(boardSize != 0) {
+        let login = document.getElementById("login").value;
+        if (login == null || login === '') {
+            alert("Please enter login");
+        } else {
+            $.ajax({
+                url: url + "/game/connect/random",
+                type: 'POST',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "player": {
+                        "login": login
+                    },
+                    "size": boardSize
+                }),
+                success: function (data) {
+                    gameId = data.gameId;
+                    playerType = 'O';
+                    reset();
+                    connectToSocket(gameId);
+                    displayResponse(data);
+                    alert("Congrats you're playing with: " + data.player1.login);
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert("Game Not Found");
+                }
+            })
+        }
+    } else{
+        alert("Please Select Board Size");
     }
 }
 
 function connectToSpecificGame() {
-    let login = document.getElementById("login").value;
-    if (login == null || login === '') {
-        alert("Please enter login");
-    } else {
-        let gameId = document.getElementById("game_id").value;
-        if (gameId == null || gameId === '') {
-            alert("Please enter game id");
-        }
-        $.ajax({
-            url: url + "/game/connect",
-            type: 'POST',
-            dataType: "json",
-            contentType: "application/json",
-            data: JSON.stringify({
-                "player": {
-                    "login": login
-                },
-                "gameId": gameId
-            }),
-            success: function (data) {
-                gameId = data.gameId;
-                playerType = 'O';
-                reset();
-                connectToSocket(gameId);
-                alert("Congrats you're playing with: " + data.player1.login);
-            },
-            error: function (error) {
-                console.log(error);
+    var boardSize = $("#boardSize").val();
+    if(boardSize != 0) {
+        let login = document.getElementById("login").value;
+        if (login == null || login === '') {
+            alert("Please enter login");
+        } else {
+            let gameIdc = document.getElementById("game_id").value;
+            if (gameIdc == null || gameIdc === '') {
+                alert("Please enter game id");
             }
-        })
+            $.ajax({
+                url: url + "/game/connect",
+                type: 'POST',
+                dataType: "json",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    "player": {
+                        "login": login
+                    },
+                    "gameId": gameIdc,
+                    "size" : boardSize
+                }),
+                success: function (data) {
+                    gameId = data.gameId;
+                    playerType = 'O';
+                    reset();
+                    connectToSocket(gameId);
+                    alert("Congrats you're playing with: " + data.player1.login);
+                },
+                error: function (error) {
+                    console.log(error);
+                    alert("Game Not Found");
+                }
+            })
+        }
+    }else{
+        alert("Please Select Board Size");
     }
 }

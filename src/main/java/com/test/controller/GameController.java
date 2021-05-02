@@ -1,6 +1,7 @@
 package com.test.controller;
 
 import com.test.controller.dto.ConnectRequest;
+import com.test.controller.dto.CreateRequest;
 import com.test.exception.InvalidGameException;
 import com.test.exception.InvalidParamException;
 import com.test.exception.NotFoundException;
@@ -27,21 +28,21 @@ public class GameController {
     private final SimpMessagingTemplate simpMessagingTemplate;
 
     @PostMapping("/start")
-    public ResponseEntity<Game> start(@RequestBody Player player) {
-        log.info("start game request: {}", player);
-        return ResponseEntity.ok(gameService.createGame(player));
+    public ResponseEntity<Game> start(@RequestBody CreateRequest request) {
+        log.info("start game request: {}", request);
+        return ResponseEntity.ok(gameService.createGame(request.getPlayer(),request.getSize()));
     }
 
     @PostMapping("/connect")
     public ResponseEntity<Game> connect(@RequestBody ConnectRequest request) throws InvalidParamException, InvalidGameException {
         log.info("connect request: {}", request);
-        return ResponseEntity.ok(gameService.connectToGame(request.getPlayer(), request.getGameId()));
+        return ResponseEntity.ok(gameService.connectToGame(request.getPlayer(), request.getGameId(), request.getSize()));
     }
 
     @PostMapping("/connect/random")
-    public ResponseEntity<Game> connectRandom(@RequestBody Player player) throws NotFoundException {
-        log.info("connect random {}", player);
-        return ResponseEntity.ok(gameService.connectToRandomGame(player));
+    public ResponseEntity<Game> connectRandom(@RequestBody CreateRequest request) throws NotFoundException {
+        log.info("connect random {}", request);
+        return ResponseEntity.ok(gameService.connectToRandomGame(request.getPlayer(),request.getSize()));
     }
 
     @PostMapping("/gameplay")

@@ -1,9 +1,9 @@
-var turns = [["#", "#", "#", "#"], ["#", "#", "#", "#"], ["#", "#", "#", "#"], ["#", "#", "#", "#"]];
+var turns = [];
+var turnsReset = [];
 var turn = "";
 var gameOn = false;
 
 function playerTurn(turn, id) {
-    console.log("masuk",gameOn);
     if (gameOn) {
         var spotTaken = $("#" + id).text();
         if (spotTaken === "#") {
@@ -57,16 +57,35 @@ function displayResponse(data) {
     gameOn = true;
 }
 
-$(".tic").click(function () {
-    var slot = $(this).attr('id');
+function play(slot){
     playerTurn(turn, slot);
-});
+};
 
 function reset() {
-    turns = [["#", "#", "#", "#"], ["#", "#", "#", "#"], ["#", "#", "#", "#"], ["#", "#", "#", "#"]];
+    turns = turnsReset;
     $(".tic").text("#");
 }
 
 $("#reset").click(function () {
     reset();
 });
+
+function createBoard(x) {
+    $("#boardSize").val(x);
+    $("#gameBoard").empty();
+    var temp = [];
+    for (let i = 0; i < x; i++) {
+        for (let j = 0; j < x; j++){
+            temp.push("#");
+            $("#gameBoard").append("<li onclick = 'play(\""+i+"_"+j+"\")' class='tic' id='"+i+"_"+j+"'></li>");
+        }
+        turns.push(temp);
+        temp = [];
+    }
+    $("#box").css("width",(113*x)+"px");
+    if(x == 6){
+        $("#box").css("width","630px");
+    }
+    console.log(turns);
+    turnsReset = turns;
+}

@@ -19,17 +19,18 @@ import static com.test.model.GameStatus.*;
 @AllArgsConstructor
 public class GameService {
 
-    public Game createGame(Player player) {
+    public Game createGame(Player player, int size) {
         Game game = new Game();
-        game.setBoard(new int[4][4]);
+        game.setBoard(new int[size][size]);
         game.setGameId(UUID.randomUUID().toString());
         game.setPlayer1(player);
         game.setStatus(NEW);
+        game.setSize(size);
         GameStorage.getInstance().setGame(game);
         return game;
     }
 
-    public Game connectToGame(Player player2, String gameId) throws InvalidParamException, InvalidGameException {
+    public Game connectToGame(Player player2, String gameId, int size) throws InvalidParamException, InvalidGameException {
         if (!GameStorage.getInstance().getGames().containsKey(gameId)) {
             throw new InvalidParamException("Game with provided id doesn't exist");
         }
@@ -39,15 +40,19 @@ public class GameService {
             throw new InvalidGameException("Game is not valid anymore");
         }
 
+        if (game.getSize() != size) {
+            throw new InvalidGameException("Wrong Game Size");
+        }
+
         game.setPlayer2(player2);
         game.setStatus(IN_PROGRESS);
         GameStorage.getInstance().setGame(game);
         return game;
     }
 
-    public Game connectToRandomGame(Player player2) throws NotFoundException {
+    public Game connectToRandomGame(Player player2, int size) throws NotFoundException {
         Game game = GameStorage.getInstance().getGames().values().stream()
-                .filter(it -> it.getStatus().equals(NEW))
+                .filter(it -> it.getStatus().equals(NEW) && it.getSize() == size)
                 .findFirst().orElseThrow(() -> new NotFoundException("Game not found"));
         game.setPlayer2(player2);
         game.setStatus(IN_PROGRESS);

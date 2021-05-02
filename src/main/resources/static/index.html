@@ -21,29 +21,20 @@
     <header>
         <h1>Play Tic Tac Toe</h1>
     </header>
+    <input type="hidden" id="boardSize" value="0">
     <input id="login" placeholder="Place a login here">
     <button onclick="create_game()">Create a new game</button>
-    <button onclick="connectToRandom()">Connect to random game</button>
+    <button onclick="connectToRandom()">Connect to random game</button><br>
+    <button onclick="createBoard(3)">3x3</button>
+    <button onclick="createBoard(4)">4x4</button>
+    <button onclick="createBoard(5)">5x5</button>
+    <button onclick="createBoard(6)">6x6</button>
+    <br>
     <input id="game_id" placeholder="Paste game id">
-    <button>Connect by game id</button>
+    <button onclick="connectToSpecificGame()">Connect by game id</button>
     <div id="message"></div>
     <ul id="gameBoard">
-        <li class="tic" id="0_0"></li>
-        <li class="tic" id="0_1"></li>
-        <li class="tic" id="0_2"></li>
-        <li class="tic" id="0_3"></li>
-        <li class="tic" id="1_0"></li>
-        <li class="tic" id="1_1"></li>
-        <li class="tic" id="1_2"></li>
-        <li class="tic" id="1_3"></li>
-        <li class="tic" id="2_0"></li>
-        <li class="tic" id="2_1"></li>
-        <li class="tic" id="2_2"></li>
-        <li class="tic" id="2_3"></li>
-        <li class="tic" id="3_0"></li>
-        <li class="tic" id="3_1"></li>
-        <li class="tic" id="3_2"></li>
-        <li class="tic" id="3_3"></li>
+
     </ul>
     <div class="clearfix"></div>
     <footer>
